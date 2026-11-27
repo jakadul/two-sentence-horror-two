@@ -1,28 +1,29 @@
-"""make.fun entry: u-suroto-two-sentence-horror-acea9253
+"""Submission writer for the suroto two-sentence horror bounty (make.fun program/v1).
 
-Writes one judged two-sentence horror story into the output file. Offline, deterministic.
+Emits exactly two sentences as UTF-8 text. Honors MAKEFUN_OUTPUT_DIR,
+falls back to /output when the grader sets no variable. Exit code stays 0
+on success; any gate violation raises SystemExit with a readable reason.
 """
-import os
 
-ENTRY_TEXT = "Every night the monitor shows her sleeping in her crib. Last night it showed her standing behind my chair."
-GATE_LIMIT = 400
+from os import environ, makedirs
+from os.path import join as joinpath
 
-
-def emit() -> int:
-    value = ENTRY_TEXT
-    n = len(value)
-    assert value.strip(), "entry text is empty"
-    assert 1 <= n <= GATE_LIMIT, f"{n} code points outside 1..{GATE_LIMIT}"
-    target = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
-    os.makedirs(target, exist_ok=True)
-    handle = open(os.path.join(target, "entry.txt"), "w", encoding="utf-8")
-    try:
-        handle.write(value)
-    finally:
-        handle.close()
-    return n
+JUDGED_TEXT = "Every night the monitor shows her sleeping in her crib. Last night it showed her standing behind my chair."
+MAX_POINTS = 400
 
 
-if __name__ == "__main__":
-    count = emit()
-    print(f"entry.txt written with {count} code points")
+def deliver() -> int:
+    points = len(JUDGED_TEXT)
+    if not JUDGED_TEXT.strip():
+        raise SystemExit("judged text is blank")
+    if points < 1 or points > MAX_POINTS:
+        raise SystemExit(f"{points} code points outside 1..{MAX_POINTS}")
+    destination = environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    makedirs(destination, exist_ok=True)
+    with open(joinpath(destination, "entry.txt"), "w", encoding="utf-8") as sink:
+        sink.write(JUDGED_TEXT)
+    return points
+
+
+count = deliver()
+print(f"wrote entry.txt, {count} code points")
