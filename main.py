@@ -8,7 +8,7 @@ on success; any gate violation raises SystemExit with a readable reason.
 from os import environ, makedirs
 from os.path import join as joinpath
 
-JUDGED_TEXT = "Every night the monitor shows her sleeping in her crib. Last night it showed her standing behind my chair."
+JUDGED_TEXT = "I deleted my mother's voicemail after a year of keeping it. My phone called her back tonight, and she answered."
 MAX_POINTS = 400
 
 
